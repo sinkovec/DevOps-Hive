@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-RUN pip install poetry
+RUN pip install --no-cache-dir poetry~=1.7.0
 
 WORKDIR /app
 
