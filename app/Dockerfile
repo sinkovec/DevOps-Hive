@@ -9,4 +9,4 @@ COPY hive ./hive
 
 RUN poetry install
 
-ENTRYPOINT [ "poetry", "run", "start" ]
+ENTRYPOINT [ "poetry", "run", "uvicorn", "hive.app:app", "--host", "0.0.0.0", "--port", "8080" ]
