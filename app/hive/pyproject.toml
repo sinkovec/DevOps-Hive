@@ -5,6 +5,9 @@ description = ""
 authors = ["Brian Sinkovec <bsin1807@gmail.com>"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+start = "hive.app:start"
+
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = "^0.109.0"
