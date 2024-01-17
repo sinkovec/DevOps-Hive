@@ -1,17 +1,21 @@
 """
 Main entrypoint of the hive app.
 """
-import importlib.metadata
-
+from importlib import metadata
 from fastapi import FastAPI
 
+from .opensensemap.router import router as open_sense_map_router
+
 app = FastAPI()
+
+app.include_router(open_sense_map_router)
+
 
 def version():
     """
     Returns the current version of the deployed app.
     """
-    return importlib.metadata.version("hive")
+    return metadata.version("hive")
 
 
 @app.get("/version")
