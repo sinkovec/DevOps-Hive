@@ -4,7 +4,7 @@ Module for handling data access to the OpenSenseMap database.
 This module defines the OpenSenseMapDao class, which is responsible for retrieving sense box data
 from the database.
 """
-from .db import SENSE_BOXES_DB
+from .db import SENSOR_ID_DB
 
 
 class OpenSenseMapDao:
@@ -13,13 +13,13 @@ class OpenSenseMapDao:
     """
 
     def __init__(self):
-        self.sense_boxes = SENSE_BOXES_DB
+        self.sense_box_sensor_ids = SENSOR_ID_DB
 
-    def get_sense_boxes(self):
+    def get_sense_box_sensor_ids(self):
         """
         Retrieves sense boxes stored from the injected data.
 
         Returns:
             list: List containing sense box data.
         """
-        return self.sense_boxes
+        return self.sense_box_sensor_ids

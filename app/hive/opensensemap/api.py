@@ -2,11 +2,11 @@
 Module for handling API requests to OpenSenseMap API.
 
 This module defines the OpenSenseMapApi class, which is responsible for handling
-API requests to the OpenSenseMap API and retrieving measurements.
+API requests to the OpenSenseMap API.
 """
 import requests
 
-from .model import Measurement
+from .model import Sensor
 
 
 class OpenSenseMapApi:
@@ -19,22 +19,21 @@ class OpenSenseMapApi:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    def get_measurements(self, sense_box_id, sensor_id, from_date):
+    def get_sensor_data(self, sense_box_id, sensor_id):
         """
-        Retrieves the 10000 latest measurements from the given date until now for the given
-        Sense Box and Sensor using the OpenSenseMap API.
+        Retrieves current sensor data for the given Sense Box and Sensor id
+        using the OpenSenseMap API.
 
         Args:
             sense_box_id (str): Identifier for the Sense Box.
             sensor_id (str): Identifier for the sensor.
-            from_date (datetime): The starting timestamp for measurements.
 
         Returns:
-            list: List of Measurement instances representing the retrieved measurements.
+            list: Sensor instance representing the retrieved current sensor data.
         """
         response = requests.get(
-            f"{self.base_url}/boxes/{sense_box_id}/data/{sensor_id}?from_date={from_date}"
+            f"{self.base_url}/boxes/{sense_box_id}/sensors/{sensor_id}"
         )
         if response.status_code == 200:
-            return [Measurement.from_json(json_data) for json_data in response.json()]
+            return Sensor.from_json(response.json())
         return None

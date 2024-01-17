@@ -5,7 +5,7 @@ This module defines the OpenSenseMapService class, which provides functionality 
 retrieving data from the OpenSenseMap repository and calculating the average temperature
 emitted by sensors in the given Sense Boxes.
 """
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from statistics import mean
 
 
@@ -24,38 +24,26 @@ class OpenSenseMapService:
         """
         Calculate the average temperature emitted by sensors in the given Sense Boxes.
 
-        This method retrieves measurements from the past hour for each sensor in each Sense Box,
-        and then calculates the average temperature.
+        This method retrieves the latest measurement from the past hour for each sensor 
+        in each Sense Box, and then calculates the average temperature.
 
         Returns:
             float: The average temperature value of all sensors.
         """
-        sense_boxes = self.repository.get_sense_boxes()
+        sense_box_sensor_ids = self.repository.get_sense_box_sensor_ids()
         from_date = self._past_hour_timestamp()
-        measurements_per_sensor = [
-            self._get_measurement_values(sense_box, sensor, from_date)
-            for sense_box in sense_boxes
-            for sensor in sense_box.sensors
+        sensor_data = [
+            self.repository.get_sensor_data(sense_box_id, sensor_id)
+            for (sense_box_id, sensor_id) in sense_box_sensor_ids
         ]
-        average_per_sensor = [mean(measurements) for measurements in measurements_per_sensor]
-        return round(mean(average_per_sensor), 2)
-
-    def _get_measurement_values(self, sense_box, sensor, from_date):
-        """
-        Retrieves measurement values for a specific sensor and time period.
-
-        Args:
-            sense_box (object): A Sense Box instance.
-            sensor (object): A Sensor instance.
-            from_date (datetime): The starting timestamp for measurements.
-
-        Returns:
-            list: List of measurement values for the specified sensor and time period.
-        """
-        result = self.repository.get_measurements(
-            sense_box.id, sensor.id, from_date.isoformat(timespec="seconds")
-        )
-        return list(map(lambda x: x.value, result))
+        last_measurements = [
+            sensor.last_measurement.value
+            for sensor in sensor_data
+            if from_date < sensor.last_measurement.created_at
+        ]
+        if last_measurements:
+            return round(mean(last_measurements), 2)
+        return "No current measurements present."
 
     def _past_hour_timestamp(self):
         """
@@ -64,4 +52,4 @@ class OpenSenseMapService:
         Returns:
             datetime: The timestamp for the past hour.
         """
-        return datetime.now() - timedelta(hours=1)
+        return datetime.now(timezone.utc) - timedelta(hours=1)

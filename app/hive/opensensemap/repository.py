@@ -17,25 +17,24 @@ class OpenSenseMapRepository:
         self.api = api
         self.dao = dao
 
-    def get_sense_boxes(self):
+    def get_sense_box_sensor_ids(self):
         """
-        Retrieves sense boxes from the data sources.
+        Retrieves sense box and sensor ids from the data sources.
 
         Returns:
             list: List of sense boxes.
         """
-        return self.dao.get_sense_boxes()
+        return self.dao.get_sense_box_sensor_ids()
 
-    def get_measurements(self, sense_box_id, sensor_id, from_date):
+    def get_sensor_data(self, sense_box_id, sensor_id):
         """
-        Retrieves measurements using the OpenSenseMap API.
+        Retrieves sensor data using the OpenSenseMap API.
 
         Args:
             sense_box_id (str): Identifier for the Sense Box.
             sensor_id (str): Identifier for the sensor.
-            from_date (datetime): The starting timestamp for measurements.
 
         Returns:
-            list: List of measurements for the specified Sense Box and sensor.
+            list: Sensor data for the specified Sense Box and sensor.
         """
-        return self.api.get_measurements(sense_box_id, sensor_id, from_date)
+        return self.api.get_sensor_data(sense_box_id, sensor_id)
