@@ -20,4 +20,6 @@ RUN poetry install
 
 COPY hive ./hive
 
+USER nobody
+
 ENTRYPOINT [ "poetry", "run", "uvicorn", "hive.app:app", "--host", "0.0.0.0", "--port", "8080" ]
