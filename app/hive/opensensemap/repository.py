@@ -17,24 +17,15 @@ class OpenSenseMapRepository:
         self.api = api
         self.dao = dao
 
-    def get_sense_box_sensor_ids(self):
+    def get_sensor_data(self):
         """
-        Retrieves sense box and sensor ids from the data sources.
+        Fetches sensor data using the OpenSenseMap API 
+        of the sensors provided in the database.
 
         Returns:
-            list: List of sense boxes.
+            list: Sensor data for the stored Sense Box and sensor.
         """
-        return self.dao.get_sense_box_sensor_ids()
-
-    def get_sensor_data(self, sense_box_id, sensor_id):
-        """
-        Retrieves sensor data using the OpenSenseMap API.
-
-        Args:
-            sense_box_id (str): Identifier for the Sense Box.
-            sensor_id (str): Identifier for the sensor.
-
-        Returns:
-            list: Sensor data for the specified Sense Box and sensor.
-        """
-        return self.api.get_sensor_data(sense_box_id, sensor_id)
+        return [
+            self.api.fetch_sensor_data(sense_box_id, sensor_id)
+            for (sense_box_id, sensor_id) in self.dao.load_sense_box_sensor_ids()
+        ]

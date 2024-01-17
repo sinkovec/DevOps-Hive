@@ -19,7 +19,7 @@ class OpenSenseMapApi:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    def get_sensor_data(self, sense_box_id, sensor_id):
+    def fetch_sensor_data(self, sense_box_id, sensor_id):
         """
         Retrieves current sensor data for the given Sense Box and Sensor id
         using the OpenSenseMap API.

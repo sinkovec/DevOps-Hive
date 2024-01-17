@@ -30,12 +30,8 @@ class OpenSenseMapService:
         Returns:
             float: The average temperature value of all sensors.
         """
-        sense_box_sensor_ids = self.repository.get_sense_box_sensor_ids()
         from_date = self._past_hour_timestamp()
-        sensor_data = [
-            self.repository.get_sensor_data(sense_box_id, sensor_id)
-            for (sense_box_id, sensor_id) in sense_box_sensor_ids
-        ]
+        sensor_data = self.repository.get_sensor_data()
         last_measurements = [
             sensor.last_measurement.value
             for sensor in sensor_data

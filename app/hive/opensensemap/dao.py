@@ -15,7 +15,7 @@ class OpenSenseMapDao:
     def __init__(self):
         self.sense_box_sensor_ids = SENSOR_ID_DB
 
-    def get_sense_box_sensor_ids(self):
+    def load_sense_box_sensor_ids(self):
         """
         Retrieves sense boxes stored from the injected data.
 
