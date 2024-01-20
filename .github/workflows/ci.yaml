@@ -20,6 +20,6 @@ jobs:
     - uses: hadolint/hadolint-action@v3.1.0
       with:
         dockerfile: ./app/Dockerfile
-    - run: docker build -t sinkovec/devops-hive-app:latest
+    - run: docker buildx build . -t sinkovec/devops-hive-app:latest
 
 
