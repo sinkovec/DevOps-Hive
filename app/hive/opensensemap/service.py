@@ -29,7 +29,13 @@ class OpenSenseMapService:
         Returns:
             string: Textual representation of temperature.
         """
-        return 0
+        if temperature < 10:
+            status = "Too Cold"
+        elif temperature <= 37:
+            status = "Good"
+        else:
+            status = "Too Hot"
+        return status
 
     def calculate_average_temperature(self):
         """
