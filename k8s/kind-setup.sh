@@ -18,3 +18,12 @@ kubectl wait --namespace ingress-nginx \
   --timeout=90s
 
 echo "Setup complete. Run kind delete cluster -n hive-cluster to cleanup"
+
+# build hive app docker image
+docker build ../app/ -t sinkovec/hive-app:0.0.1
+
+# load docker image into kind cluster
+kind load docker-image sinkovec/hive-app:0.0.1
+
+# apply app manifest
+kubectl apply -f hive.yaml

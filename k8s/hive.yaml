@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hive-app
+  labels:
+    name: hive-app
+spec:
+  containers:
+  - name: hive-app
+    image: sinkovec/hive-app:0.0.1
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 8080
