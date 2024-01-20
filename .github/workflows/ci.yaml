@@ -22,7 +22,7 @@ jobs:
     - uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
       with:
         dockerfile: ./app/Dockerfile
-    - run: poetry run pytest 
+    - run: poetry run coverage run -m pytest 
     - run: docker buildx build . -t sinkovec/hive-app:latest
     - uses: sonarsource/sonarcloud-github-action@49e6cd3b187936a73b8280d59ffd9da69df63ec9 # v2.1.1
       env:
