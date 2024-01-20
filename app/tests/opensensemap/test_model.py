@@ -1,8 +1,19 @@
+"""
+Module: test_open_sense_map_model.py
+
+This module contains unit tests for the methods in the hive.opensensemap.model module.
+"""
 from datetime import datetime
 
 from hive.opensensemap.model import Sensor, Measurement
 
 def test_measurement_from_json():
+    """
+    Test the `Measurement.from_json` method.
+
+    Checks if the `Measurement.from_json` method properly parses JSON data 
+    and creates a Measurement object.
+    """
     # given
     json_data = {
         "createdAt": "2024-01-17T20:00:00.00Z",
@@ -17,6 +28,11 @@ def test_measurement_from_json():
 
 
 def test_sensor_from_json():
+    """
+    Test the `Sensor.from_json` method.
+
+    Checks if the `Sensor.from_json` method properly parses JSON data and creates a Sensor object.
+    """
     # given
     json_data = {
         "title": "Temperatur",
@@ -34,6 +50,6 @@ def test_sensor_from_json():
     # then
     assert result is not None
     assert result.title == "Temperatur"
-    assert result.id == "61e6c8ffac538c001b9f4bf1"
+    assert result.sensor_id == "61e6c8ffac538c001b9f4bf1"
     assert result.last_measurement is not None
     assert result.last_measurement.value == -2.27

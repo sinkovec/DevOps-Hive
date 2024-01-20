@@ -11,7 +11,7 @@ class OpenSenseMapDao:
     """
     Class to handle data access to OpenSenseMap database.
     """
-
+    # pylint: disable=too-few-public-methods
     def __init__(self):
         self.sense_box_sensor_ids = SENSOR_ID_DB
 

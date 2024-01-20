@@ -13,6 +13,7 @@ class OpenSenseMapRepository:
     This class encapsulates functionality to retrieve sense boxes from the data sources
     and to fetch measurements using the OpenSenseMap API.
     """
+    # pylint: disable=too-few-public-methods
     def __init__(self, api, dao):
         self.api = api
         self.dao = dao

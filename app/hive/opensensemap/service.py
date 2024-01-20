@@ -16,7 +16,7 @@ class OpenSenseMapService:
     This class encapsulates functionality to interact with the OpenSenseMap repository
     and calculate the average temperature emitted by sensors in the given Sense Boxes.
     """
-
+    # pylint: disable=too-few-public-methods
     def __init__(self, repository):
         self.repository = repository
 
