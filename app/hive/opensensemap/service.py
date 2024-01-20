@@ -20,6 +20,23 @@ class OpenSenseMapService:
     def __init__(self, repository):
         self.repository = repository
 
+    def temperature_status(self, temperature):
+        """
+        Returns a string depending on the given temperature.
+
+        Possible values: "Too Cold", "Good", "Too Hot".
+
+        Returns:
+            string: Textual representation of temperature.
+        """
+        if temperature < 10:
+            status = "Too Cold"
+        elif temperature <= 37:
+            status = "Good"
+        else:
+            status = "Too Hot"
+        return status
+
     def calculate_average_temperature(self):
         """
         Calculate the average temperature emitted by sensors in the given Sense Boxes.

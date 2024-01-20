@@ -6,6 +6,7 @@ This module contains unit tests for the methods in the hive.opensensemap.service
 
 from datetime import datetime, timezone
 from unittest.mock import Mock
+import pytest
 
 from hive.opensensemap.model import Sensor, Measurement
 from hive.opensensemap.service import OpenSenseMapService
@@ -75,3 +76,25 @@ def test_calculate_average_temperature_no_measurements():
     result = uut.calculate_average_temperature()
     # then
     assert result == "No current measurements present."
+
+@pytest.mark.parametrize("temperature, expected_result", [
+    (-10, "Too Cold"),
+    (9, "Too Cold"),
+    (10, "Good"),
+    (37, "Good"),
+    (38, "Too Hot"),
+    (9999, "Too Hot"),
+])
+def test_temperature_status_lt10(temperature, expected_result):
+    """
+    Test the `OpenSenseMapService.temperature_status` method 
+    with several temperatures as input (parameterized) including boundary testing.
+
+    Checks if the method returns an appropriate message for given temperatures.
+    """
+    # given
+    uut = OpenSenseMapService(Mock())
+    # when
+    result = uut.temperature_status(temperature)
+    # then
+    assert result == expected_result
