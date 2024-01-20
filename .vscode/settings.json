@@ -4,6 +4,7 @@
         "renovate",
         "app",
         "ide",
-        "k8s"
+        "k8s",
+        "ci"
     ]
 }

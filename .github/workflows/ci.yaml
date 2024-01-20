@@ -23,6 +23,6 @@ jobs:
       with:
         dockerfile: ./app/Dockerfile
     - run: poetry run pytest 
-    - run: docker buildx build . -t sinkovec/devops-hive-app:latest
+    - run: docker buildx build . -t sinkovec/hive-app:latest
 
 
