@@ -1,3 +1,8 @@
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}/app/.venv"
+    "python.defaultInterpreterPath": "${workspaceFolder}/app/.venv",
+    "conventionalCommits.scopes": [
+        "renovate",
+        "app",
+        "ide"
+    ]
 }
