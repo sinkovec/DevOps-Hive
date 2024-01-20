@@ -10,8 +10,7 @@ jobs:
         working-directory: ./app
     steps:
     - uses: actions/checkout@v4
-    - name: Install poetry
-      run: pipx install poetry
+    - run: pipx install poetry
     - uses: actions/setup-python@v5
       with:
         python-version: 3.12
@@ -21,5 +20,6 @@ jobs:
     - uses: hadolint/hadolint-action@v3.1.0
       with:
         dockerfile: ./app/Dockerfile
+    - run: docker build -t sinkovec/devops-hive-app:latest
 
 
