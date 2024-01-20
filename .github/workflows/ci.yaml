@@ -11,15 +11,15 @@ jobs:
       run:
         working-directory: ./app
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
     - run: pipx install poetry
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
       with:
         python-version: 3.12
         cache: poetry
     - run: poetry install
     - run: poetry run pylint $(git ls-files '*.py')
-    - uses: hadolint/hadolint-action@v3.1.0
+    - uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
       with:
         dockerfile: ./app/Dockerfile
     - run: poetry run pytest 
