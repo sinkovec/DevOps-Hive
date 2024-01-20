@@ -26,3 +26,22 @@ spec:
   ports:
   - port: 8080
     targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hive-app
+  labels:
+    name: hive-app
+spec:
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: hive-app
+            port: 
+              number: 8080
+
