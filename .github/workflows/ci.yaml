@@ -1,4 +1,4 @@
-name: Pylint
+name: CI pipeline
 
 on: push
 
@@ -18,3 +18,8 @@ jobs:
         cache: poetry
     - run: poetry install
     - run: poetry run pylint $(git ls-files '*.py')
+    - uses: hadolint/hadolint-action@v3.1.0
+      with:
+        dockerfile: Dockerfile
+
+
