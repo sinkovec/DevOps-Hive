@@ -29,3 +29,6 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         projectBaseDir: app/
+        args: >
+          -Dsonar.organization=devops-hive
+          -Dsonar.projectKey=sinkovec_DevOps-Hive
