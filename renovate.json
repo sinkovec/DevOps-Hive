@@ -12,5 +12,6 @@
       "matchDepTypes": ["devDependencies"],
       "automerge": true
     }
-  ]
+  ],
+  "pinDigests": true
 }
