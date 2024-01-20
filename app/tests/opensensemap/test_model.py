@@ -4,6 +4,7 @@ Module: test_open_sense_map_model.py
 This module contains unit tests for the methods in the hive.opensensemap.model module.
 """
 from datetime import datetime
+from pytest import approx
 
 from hive.opensensemap.model import Sensor, Measurement
 
@@ -23,7 +24,7 @@ def test_measurement_from_json():
     result = Measurement.from_json(json_data)
     # then
     assert result is not None
-    assert result.value == 1.25
+    assert result.value == approx(1.25)
     assert isinstance(result.created_at, datetime)
 
 

@@ -39,7 +39,7 @@ def test_calculate_average_temperature_positive():
     # when
     result = uut.calculate_average_temperature()
     # then
-    assert result == 4.5
+    assert result == pytest.approx(4.5)
 
 def test_calculate_average_temperature_negative():
     """
@@ -59,7 +59,7 @@ def test_calculate_average_temperature_negative():
     # when
     result = uut.calculate_average_temperature()
     # then
-    assert result == -7.5
+    assert result == pytest.approx(-7.5)
 
 def test_calculate_average_temperature_no_measurements():
     """
