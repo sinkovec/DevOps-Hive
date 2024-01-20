@@ -3,6 +3,7 @@
     "conventionalCommits.scopes": [
         "renovate",
         "app",
-        "ide"
+        "ide",
+        "k8s"
     ]
 }
