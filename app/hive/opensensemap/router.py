@@ -23,4 +23,8 @@ def read_temperature():
     Returns:
         float: The average temperature value of all sensors.
     """
-    return service.calculate_average_temperature()
+    avg_temperature = service.calculate_average_temperature()
+    return {
+        "status": service.temperature_status(avg_temperature),
+        "temperature": avg_temperature
+    }
