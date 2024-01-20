@@ -24,5 +24,8 @@ jobs:
         dockerfile: ./app/Dockerfile
     - run: poetry run pytest 
     - run: docker buildx build . -t sinkovec/hive-app:latest
-
-
+    - uses: sonarsource/sonarcloud-github-action@49e6cd3b187936a73b8280d59ffd9da69df63ec9 # v2.1.1
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: app/
