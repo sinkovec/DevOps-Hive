@@ -16,7 +16,7 @@ WORKDIR /app
 
 COPY pyproject.toml poetry.lock README.md ./
 
-RUN poetry install
+RUN poetry install --without=dev
 
 COPY hive ./hive
 
