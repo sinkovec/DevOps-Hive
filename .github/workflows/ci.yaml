@@ -33,3 +33,6 @@ jobs:
         args: >
           -Dsonar.organization=devops-hive
           -Dsonar.projectKey=sinkovec_DevOps-Hive
+          -Dsonar.sources=hive
+          -Dsonar.tests=tests
+          -Dsonar.language=py
