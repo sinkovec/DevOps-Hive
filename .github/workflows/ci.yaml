@@ -37,3 +37,4 @@ jobs:
           -Dsonar.sources=hive
           -Dsonar.tests=tests
           -Dsonar.language=py
+          -Dsonar.python.coverage.reportPaths=coverage.xml
