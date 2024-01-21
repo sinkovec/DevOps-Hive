@@ -23,3 +23,7 @@ jobs:
         context: app
         push: true
         tags: ghcr.io/sinkovec/hive-app:latest
+        labels: |
+          org.opencontainers.image.source=https://github.com/sinkovec/DevOps-Hive
+          org.opencontainers.image.description=Hive app
+          org.opencontainers.image.licenses=MIT
