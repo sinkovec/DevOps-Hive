@@ -14,6 +14,7 @@ Components:
 Configuration:
     - OPEN_SENSE_MAP_API_BASE_URL (str): Base URL for the OpenSenseMap API.
 """
+from redis import Redis
 from .api import OpenSenseMapApi
 from .dao import OpenSenseMapDao
 from .repository import OpenSenseMapRepository
@@ -25,3 +26,4 @@ api = OpenSenseMapApi(OPEN_SENSE_MAP_API_BASE_URL)
 dao = OpenSenseMapDao()
 repository = OpenSenseMapRepository(api, dao)
 service = OpenSenseMapService(repository)
+redis = Redis(host="localhost", port=6379)

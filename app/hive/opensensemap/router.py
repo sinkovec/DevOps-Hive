@@ -11,11 +11,9 @@ Endpoints:
 """
 import json
 from fastapi import APIRouter
-from redis import Redis
 
-from .config import service
+from .config import service, redis
 
-redis = Redis(host="localhost", port=6379)
 router = APIRouter()
 
 @router.get("/temperature")
