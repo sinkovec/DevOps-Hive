@@ -5,10 +5,10 @@ This module defines the OpenSenseMapDao class, which is responsible for retrievi
 from the database.
 """
 import re
-import os
-import dotenv
 
+from hive.config import settings
 from .db import SENSOR_ID_DB
+
 
 class OpenSenseMapDao:
     """
@@ -30,8 +30,7 @@ class OpenSenseMapDao:
         Raises:
             RuntimeError: If the provided senseBoxes do not match the expected format.
         """
-        dotenv.load_dotenv()
-        sense_box_sensor_ids = os.getenv("SENSE_BOXES")
+        sense_box_sensor_ids = settings.get("SENSE_BOXES", None)
 
         if sense_box_sensor_ids is None:
             sense_box_sensor_ids = SENSOR_ID_DB

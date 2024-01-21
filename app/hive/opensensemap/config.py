@@ -14,8 +14,8 @@ Components:
 Configuration:
     - OPEN_SENSE_MAP_API_BASE_URL (str): Base URL for the OpenSenseMap API.
 """
-from dynaconf import settings
 from redis import Redis
+from hive.config import settings
 from .api import OpenSenseMapApi
 from .dao import OpenSenseMapDao
 from .repository import OpenSenseMapRepository
