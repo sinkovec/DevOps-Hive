@@ -4,6 +4,7 @@ Module to define common models used when interacting with OpenSenseMap.
 from datetime import datetime
 from dataclasses import dataclass
 
+
 @dataclass
 class Sensor:
     """
@@ -24,8 +25,9 @@ class Sensor:
         return cls(
             sensor_id=json_data["_id"],
             title=json_data["title"],
-            last_measurement=Measurement.from_json(json_data["lastMeasurement"])
+            last_measurement=Measurement.from_json(json_data["lastMeasurement"]),
         )
+
 
 @dataclass
 class Measurement:
@@ -45,5 +47,5 @@ class Measurement:
         """
         return cls(
             created_at=datetime.fromisoformat(json_data["createdAt"]),
-            value=float(json_data["value"])
+            value=float(json_data["value"]),
         )

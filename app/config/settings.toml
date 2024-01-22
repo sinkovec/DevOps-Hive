@@ -1,0 +1,3 @@
+redis_host = "localhost"
+redis_port = 6379
+# sense_boxes = "62221953b527de001b58de79,62221953b527de001b58de7c"

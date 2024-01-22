@@ -9,22 +9,25 @@ Endpoints:
         return the average temperature of sense box sensors.
 
 """
-from fastapi import APIRouter
+from typing import Annotated
+from fastapi import APIRouter, Depends
 
-from .config import service
+from .di import get_service
+from .service import OpenSenseMapService
 
 router = APIRouter()
 
+
 @router.get("/temperature")
-def read_temperature():
+def read_temperature(service: Annotated[OpenSenseMapService, Depends(get_service)]):
     """
     GET method to calculate and return the average temperature of sense box sensors.
 
     Returns:
-        float: The average temperature value of all sensors.
+        dict: Dictionary containing "status" and "temperature" keys.
     """
-    avg_temperature = service.calculate_average_temperature()
+    avg_temperature = service.get_average_temperature()
     return {
         "status": service.temperature_status(avg_temperature),
-        "temperature": avg_temperature
+        "temperature": avg_temperature,
     }

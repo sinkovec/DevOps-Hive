@@ -1,5 +1,5 @@
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}/app/.venv",
+    "python.defaultInterpreterPath": "${workspaceFolder}/app/.venv/bin/python",
     "conventionalCommits.scopes": [
         "renovate",
         "app",
@@ -7,5 +7,10 @@
         "k8s",
         "ci",
         "cd"
-    ]
+    ],
+    "python.testing.pytestArgs": [
+        "app"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }

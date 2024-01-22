@@ -5,11 +5,33 @@ This module contains integration tests for the OpenSenseMap API endpoint in the 
 """
 from datetime import datetime, timezone
 from fastapi.testclient import TestClient
+from testcontainers.redis import RedisContainer
 import pytest
 
 from hive.app import app
+from hive.opensensemap.di import get_redis
 
 client = TestClient(app)
+
+
+@pytest.fixture(scope="module", autouse=True)
+def setup(request):
+    """
+    Setup Redis testcontainer and supply client to app.
+    """
+    redis = RedisContainer()
+    redis.start()
+
+    def stop():
+        redis.stop()
+
+    request.addfinalizer(stop)
+
+    def get_redis_client():
+        return redis.get_client()
+
+    app.dependency_overrides[get_redis] = get_redis_client
+
 
 @pytest.fixture(name="fake_sensor_data")
 def fixture_fake_sensor_data():
@@ -24,8 +46,8 @@ def fixture_fake_sensor_data():
         "title": "Sensor title",
         "lastMeasurement": {
             "createdAt": datetime.now(timezone.utc).isoformat(),
-            "value": "10"
-        }
+            "value": "10",
+        },
     }
 
 
@@ -46,8 +68,11 @@ def test_temperature(mocker, fake_sensor_data):
 
     mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
 
+    # when
     response = client.get("/temperature")
 
+    # then
+    print(response.json())
     assert response.status_code == 200
     content = response.json()
     assert content["status"] == "Good"
