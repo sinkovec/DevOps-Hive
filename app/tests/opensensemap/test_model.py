@@ -8,18 +8,16 @@ from pytest import approx
 
 from hive.opensensemap.model import Sensor, Measurement
 
+
 def test_measurement_from_json():
     """
     Test the `Measurement.from_json` method.
 
-    Checks if the `Measurement.from_json` method properly parses JSON data 
+    Checks if the `Measurement.from_json` method properly parses JSON data
     and creates a Measurement object.
     """
     # given
-    json_data = {
-        "createdAt": "2024-01-17T20:00:00.00Z",
-        "value": "1.25"
-    }
+    json_data = {"createdAt": "2024-01-17T20:00:00.00Z", "value": "1.25"}
     # when
     result = Measurement.from_json(json_data)
     # then
@@ -41,10 +39,7 @@ def test_sensor_from_json():
         "sensorType": "Wetterstation",
         "icon": "osem-thermometer",
         "_id": "61e6c8ffac538c001b9f4bf1",
-        "lastMeasurement": {
-            "createdAt": "2024-01-17T16:09:36.045Z",
-            "value": "-2.27"
-        }
+        "lastMeasurement": {"createdAt": "2024-01-17T16:09:36.045Z", "value": "-2.27"},
     }
     # when
     result = Sensor.from_json(json_data)

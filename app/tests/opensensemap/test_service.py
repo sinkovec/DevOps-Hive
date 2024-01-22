@@ -11,6 +11,7 @@ import pytest
 from hive.opensensemap.model import Sensor, Measurement
 from hive.opensensemap.service import OpenSenseMapService
 
+
 def create_sensor(value):
     """
     Helper function to create a Sensor object with a specific value.
@@ -18,14 +19,17 @@ def create_sensor(value):
     :param value: Numeric value for the sensor measurement.
     :return: Sensor object
     """
-    return Sensor("some-id", "some-title", Measurement(datetime.now(timezone.utc), value))
+    return Sensor(
+        "some-id", "some-title", Measurement(datetime.now(timezone.utc), value)
+    )
+
 
 def test_calculate_average_temperature_positive():
     """
-    Test the `OpenSenseMapService.calculate_average_temperature` method 
+    Test the `OpenSenseMapService.calculate_average_temperature` method
     with positive temperature values.
 
-    Checks if the average temperature is correctly calculated when provided 
+    Checks if the average temperature is correctly calculated when provided
     with positive temperature values.
     """
     # given
@@ -41,12 +45,13 @@ def test_calculate_average_temperature_positive():
     # then
     assert result == pytest.approx(4.5)
 
+
 def test_calculate_average_temperature_negative():
     """
-    Test the `OpenSenseMapService.calculate_average_temperature` method 
+    Test the `OpenSenseMapService.calculate_average_temperature` method
     with negative temperature values.
 
-    Checks if the average temperature is correctly calculated when provided 
+    Checks if the average temperature is correctly calculated when provided
     with negative temperature values.
     """
     # given
@@ -61,9 +66,10 @@ def test_calculate_average_temperature_negative():
     # then
     assert result == pytest.approx(-7.5)
 
+
 def test_calculate_average_temperature_no_measurements():
     """
-    Test the `OpenSenseMapService.calculate_average_temperature` method 
+    Test the `OpenSenseMapService.calculate_average_temperature` method
     with no measurements available.
 
     Checks if the method returns an appropriate message when no measurements are present.
@@ -77,17 +83,21 @@ def test_calculate_average_temperature_no_measurements():
     # then
     assert result == "No current measurements present."
 
-@pytest.mark.parametrize("temperature, expected_result", [
-    (-10, "Too Cold"),
-    (9, "Too Cold"),
-    (10, "Good"),
-    (37, "Good"),
-    (38, "Too Hot"),
-    (9999, "Too Hot"),
-])
+
+@pytest.mark.parametrize(
+    "temperature, expected_result",
+    [
+        (-10, "Too Cold"),
+        (9, "Too Cold"),
+        (10, "Good"),
+        (37, "Good"),
+        (38, "Too Hot"),
+        (9999, "Too Hot"),
+    ],
+)
 def test_temperature_status_lt10(temperature, expected_result):
     """
-    Test the `OpenSenseMapService.temperature_status` method 
+    Test the `OpenSenseMapService.temperature_status` method
     with several temperatures as input (parameterized) including boundary testing.
 
     Checks if the method returns an appropriate message for given temperatures.

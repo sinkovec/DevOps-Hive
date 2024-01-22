@@ -12,6 +12,7 @@ app.include_router(open_sense_map_router)
 
 Instrumentator().instrument(app).expose(app)
 
+
 def version():
     """
     Returns the current version of the deployed app.

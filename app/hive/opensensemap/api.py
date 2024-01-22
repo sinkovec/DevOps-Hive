@@ -16,6 +16,7 @@ class OpenSenseMapApi:
     This class encapsulates functionality to make requests to the OpenSenseMap API and
     retrieve the latest measurements for a specified Sense Box and Sensor.
     """
+
     # pylint: disable=too-few-public-methods
     def __init__(self, base_url):
         self.base_url = base_url
@@ -33,8 +34,7 @@ class OpenSenseMapApi:
             list: Sensor instance representing the retrieved current sensor data.
         """
         response = requests.get(
-            f"{self.base_url}/boxes/{sense_box_id}/sensors/{sensor_id}",
-            timeout=30
+            f"{self.base_url}/boxes/{sense_box_id}/sensors/{sensor_id}", timeout=30
         )
         if response.status_code == 200:
             return Sensor.from_json(response.json())

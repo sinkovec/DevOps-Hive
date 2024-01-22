@@ -17,6 +17,7 @@ class OpenSenseMapService:
     This class encapsulates functionality to interact with the OpenSenseMap repository
     and calculate the average temperature emitted by sensors in the given Sense Boxes.
     """
+
     def __init__(self, redis, repository):
         self.redis = redis
         self.repository = repository
@@ -39,6 +40,13 @@ class OpenSenseMapService:
         return status
 
     def get_average_temperature(self):
+        """
+        Gets the current average temperature, either from redis cache or, if expired,
+        directly computing the average from current sensor values.
+
+        Returns:
+          float: The average temperature value of all sensors, possibly from cache.
+        """
         temperature = self._get_cache()
 
         if not temperature:
@@ -51,7 +59,7 @@ class OpenSenseMapService:
         """
         Calculate the average temperature emitted by sensors in the given Sense Boxes.
 
-        This method retrieves the latest measurement from the past hour for each sensor 
+        This method retrieves the latest measurement from the past hour for each sensor
         in each Sense Box, and then calculates the average temperature.
 
         Returns:
@@ -76,7 +84,6 @@ class OpenSenseMapService:
             datetime: The timestamp for the past hour.
         """
         return datetime.now(timezone.utc) - timedelta(hours=1)
-
 
     def _get_cache(self):
         """

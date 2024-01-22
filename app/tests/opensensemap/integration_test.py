@@ -13,8 +13,12 @@ from hive.opensensemap.di import get_redis
 
 client = TestClient(app)
 
+
 @pytest.fixture(scope="module", autouse=True)
 def setup(request):
+    """
+    Setup Redis testcontainer and supply client to app.
+    """
     redis = RedisContainer()
     redis.start()
 
@@ -42,8 +46,8 @@ def fixture_fake_sensor_data():
         "title": "Sensor title",
         "lastMeasurement": {
             "createdAt": datetime.now(timezone.utc).isoformat(),
-            "value": "10"
-        }
+            "value": "10",
+        },
     }
 
 
