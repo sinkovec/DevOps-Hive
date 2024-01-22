@@ -32,7 +32,7 @@ def read_temperature(service: Annotated[OpenSenseMapService, Depends(get_service
     Returns:
         dict: Dictionary containing "status" and "temperature" keys.
     """
-    avg_temperature = service.get_average_temperature()
+    avg_temperature = service.calculate_average_temperature()
     temperature_metric.set(avg_temperature)
     return {
         "status": service.temperature_status(avg_temperature),

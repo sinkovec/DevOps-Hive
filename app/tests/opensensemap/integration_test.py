@@ -4,6 +4,8 @@ Module: test_open_sense_map_api.py
 This module contains integration tests for the OpenSenseMap API endpoint in the hive.app module.
 """
 from datetime import datetime, timezone
+import json
+
 from fastapi.testclient import TestClient
 from testcontainers.redis import RedisContainer
 import pytest
@@ -41,14 +43,14 @@ def fixture_fake_sensor_data():
     Returns:
         dict: Dictionary representing fake sensor data.
     """
-    return {
+    return json.dumps({
         "_id": "1",
         "title": "Sensor title",
         "lastMeasurement": {
             "createdAt": datetime.now(timezone.utc).isoformat(),
             "value": "10",
         },
-    }
+    })
 
 
 def test_temperature(mocker, fake_sensor_data):
@@ -63,7 +65,7 @@ def test_temperature(mocker, fake_sensor_data):
     """
     # given
     fake_resp = mocker.Mock()
-    fake_resp.json.return_value = fake_sensor_data
+    fake_resp.content = fake_sensor_data
     fake_resp.status_code = 200
 
     mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)

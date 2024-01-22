@@ -27,11 +27,18 @@ from .service import OpenSenseMapService
 OPEN_SENSE_MAP_API_BASE_URL = "https://api.opensensemap.org"
 
 
-def get_api():
+def get_redis():
+    """
+    Creates Redis instance.
+    """
+    return Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+
+
+def get_api(redis: Annotated[Redis, Depends(get_redis)]):
     """
     Creates OpenSenseMapApi instance.
     """
-    return OpenSenseMapApi(OPEN_SENSE_MAP_API_BASE_URL)
+    return OpenSenseMapApi(OPEN_SENSE_MAP_API_BASE_URL, redis)
 
 
 def get_dao():
@@ -39,13 +46,6 @@ def get_dao():
     Creates OpenSenseMapDao instance.
     """
     return OpenSenseMapDao()
-
-
-def get_redis():
-    """
-    Creates Redis instance.
-    """
-    return Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
 
 def get_repository(
@@ -59,10 +59,9 @@ def get_repository(
 
 
 def get_service(
-    redis: Annotated[Redis, Depends(get_redis)],
     repository: Annotated[OpenSenseMapRepository, Depends(get_repository)],
 ):
     """
     Creates OpenSenseMapService instance.
     """
-    return OpenSenseMapService(redis, repository)
+    return OpenSenseMapService(repository)

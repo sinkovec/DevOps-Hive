@@ -4,6 +4,7 @@ Module for handling API requests to OpenSenseMap API.
 This module defines the OpenSenseMapApi class, which is responsible for handling
 API requests to the OpenSenseMap API.
 """
+import json
 import requests
 
 from .model import Sensor
@@ -18,8 +19,11 @@ class OpenSenseMapApi:
     """
 
     # pylint: disable=too-few-public-methods
-    def __init__(self, base_url):
+    def __init__(self, base_url, redis):
         self.base_url = base_url
+        self.redis = redis
+        self.redis_cache_key = "opensensemap_%s_%s"
+        self.redis_expire_time = 60 * 30
 
     def fetch_sensor_data(self, sense_box_id, sensor_id):
         """
@@ -33,9 +37,21 @@ class OpenSenseMapApi:
         Returns:
             list: Sensor instance representing the retrieved current sensor data.
         """
-        response = requests.get(
-            f"{self.base_url}/boxes/{sense_box_id}/sensors/{sensor_id}", timeout=30
-        )
-        if response.status_code == 200:
-            return Sensor.from_json(response.json())
-        return None
+        cache_key = self._cache_key(sense_box_id, sensor_id)
+        data = self.redis.get(cache_key)
+
+        if not data:
+            response = requests.get(
+                f"{self.base_url}/boxes/{sense_box_id}/sensors/{sensor_id}", timeout=30
+            )
+            if response.status_code == 200:
+                data = response.content
+                self.redis.set(cache_key, data, ex=self.redis_expire_time)
+
+        if data:
+            data = Sensor.from_json(json.loads(data))
+
+        return data
+
+    def _cache_key(self, sense_box_id, sensor_id):
+        return self.redis_cache_key.format(sense_box_id, sensor_id)

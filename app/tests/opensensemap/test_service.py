@@ -39,7 +39,7 @@ def test_calculate_average_temperature_positive():
         create_sensor(4.5),
         create_sensor(5),
     ]
-    uut = OpenSenseMapService(None, mock_repository)
+    uut = OpenSenseMapService(mock_repository)
     # when
     result = uut.calculate_average_temperature()
     # then
@@ -60,7 +60,7 @@ def test_calculate_average_temperature_negative():
         create_sensor(-5),
         create_sensor(-10),
     ]
-    uut = OpenSenseMapService(None, mock_repository)
+    uut = OpenSenseMapService(mock_repository)
     # when
     result = uut.calculate_average_temperature()
     # then
@@ -77,7 +77,7 @@ def test_calculate_average_temperature_no_measurements():
     # given
     mock_repository = Mock()
     mock_repository.get_sensor_data.return_value = []
-    uut = OpenSenseMapService(None, mock_repository)
+    uut = OpenSenseMapService(mock_repository)
     # when
     result = uut.calculate_average_temperature()
     # then
@@ -95,7 +95,7 @@ def test_calculate_average_temperature_contains_none_measurements():
     # given
     mock_repository = Mock()
     mock_repository.get_sensor_data.return_value = [create_sensor(0), None]
-    uut = OpenSenseMapService(None, mock_repository)
+    uut = OpenSenseMapService(mock_repository)
     # when
     result = uut.calculate_average_temperature()
     # then
@@ -113,7 +113,7 @@ def test_calculate_average_temperature_only_none_measurements():
     # given
     mock_repository = Mock()
     mock_repository.get_sensor_data.return_value = [None]
-    uut = OpenSenseMapService(None, mock_repository)
+    uut = OpenSenseMapService(mock_repository)
     # when
     result = uut.calculate_average_temperature()
     # then
@@ -139,7 +139,7 @@ def test_temperature_status_lt10(temperature, expected_result):
     Checks if the method returns an appropriate message for given temperatures.
     """
     # given
-    uut = OpenSenseMapService(None, None)
+    uut = OpenSenseMapService(None)
     # when
     result = uut.temperature_status(temperature)
     # then
