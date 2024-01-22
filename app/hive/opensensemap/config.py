@@ -26,5 +26,5 @@ OPEN_SENSE_MAP_API_BASE_URL = "https://api.opensensemap.org"
 api = OpenSenseMapApi(OPEN_SENSE_MAP_API_BASE_URL)
 dao = OpenSenseMapDao()
 repository = OpenSenseMapRepository(api, dao)
-service = OpenSenseMapService(repository)
 redis = Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+service = OpenSenseMapService(redis, repository)

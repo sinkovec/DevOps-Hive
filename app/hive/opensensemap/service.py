@@ -7,6 +7,7 @@ emitted by sensors in the given Sense Boxes.
 """
 from datetime import datetime, timedelta, timezone
 from statistics import mean
+import json
 
 
 class OpenSenseMapService:
@@ -16,8 +17,8 @@ class OpenSenseMapService:
     This class encapsulates functionality to interact with the OpenSenseMap repository
     and calculate the average temperature emitted by sensors in the given Sense Boxes.
     """
-    # pylint: disable=too-few-public-methods
-    def __init__(self, repository):
+    def __init__(self, redis, repository):
+        self.redis = redis
         self.repository = repository
 
     def temperature_status(self, temperature):
@@ -37,7 +38,16 @@ class OpenSenseMapService:
             status = "Too Hot"
         return status
 
-    def calculate_average_temperature(self):
+    def get_average_temperature(self):
+        temperature = self._get_cache()
+
+        if not temperature:
+            temperature = self._calculate_average_temperature()
+            self._set_cache(temperature)
+
+        return temperature
+
+    def _calculate_average_temperature(self):
         """
         Calculate the average temperature emitted by sensors in the given Sense Boxes.
 
@@ -66,3 +76,25 @@ class OpenSenseMapService:
             datetime: The timestamp for the past hour.
         """
         return datetime.now(timezone.utc) - timedelta(hours=1)
+
+
+    def _get_cache(self):
+        """
+        Retrieves cached data from Redis.
+
+        Returns:
+            dict: Dictionary containing cached data or None if not found.
+        """
+        data = self.redis.get("opensensemap_temperature")
+        if data:
+            data = json.loads(data)
+        return data
+
+    def _set_cache(self, data):
+        """
+        Sets data into the Redis cache.
+
+        Args:
+            data: Data to be stored in the cache.
+        """
+        self.redis.set("opensensemap_temperature", json.dumps(data), ex=120)
