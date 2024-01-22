@@ -14,6 +14,8 @@ Components:
 Configuration:
     - OPEN_SENSE_MAP_API_BASE_URL (str): Base URL for the OpenSenseMap API.
 """
+from typing import Annotated
+from fastapi import Depends
 from redis import Redis
 from hive.config import settings
 from .api import OpenSenseMapApi
@@ -23,8 +25,19 @@ from .service import OpenSenseMapService
 
 OPEN_SENSE_MAP_API_BASE_URL = "https://api.opensensemap.org"
 
-api = OpenSenseMapApi(OPEN_SENSE_MAP_API_BASE_URL)
-dao = OpenSenseMapDao()
-repository = OpenSenseMapRepository(api, dao)
-redis = Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
-service = OpenSenseMapService(redis, repository)
+def get_api():
+    return OpenSenseMapApi(OPEN_SENSE_MAP_API_BASE_URL)
+
+def get_dao():
+    return OpenSenseMapDao()
+
+def get_redis():
+    return Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+
+def get_repository(api: Annotated[OpenSenseMapApi, Depends(get_api)],
+                   dao: Annotated[OpenSenseMapDao, Depends(get_dao)]):
+    return OpenSenseMapRepository(api, dao)
+
+def get_service(redis: Annotated[Redis, Depends(get_redis)],
+                repository: Annotated[OpenSenseMapRepository, Depends(get_repository)]):
+    return OpenSenseMapService(redis, repository)

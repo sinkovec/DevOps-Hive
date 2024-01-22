@@ -9,18 +9,24 @@ from testcontainers.redis import RedisContainer
 import pytest
 
 from hive.app import app
+from hive.opensensemap.di import get_redis
 
 client = TestClient(app)
-redis = RedisContainer()
 
 @pytest.fixture(scope="module", autouse=True)
 def setup(request):
+    redis = RedisContainer()
     redis.start()
 
     def stop():
         redis.stop()
 
     request.addfinalizer(stop)
+
+    def get_redis_client():
+        return redis.get_client()
+
+    app.dependency_overrides[get_redis] = get_redis_client
 
 
 @pytest.fixture(name="fake_sensor_data")
@@ -57,12 +63,12 @@ def test_temperature(mocker, fake_sensor_data):
     fake_resp.status_code = 200
 
     mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
-    mocker.patch("hive.opensensemap.config.service.redis", redis.get_client())
 
     # when
     response = client.get("/temperature")
 
     # then
+    print(response.json())
     assert response.status_code == 200
     content = response.json()
     assert content["status"] == "Good"
