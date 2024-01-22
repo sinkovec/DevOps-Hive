@@ -42,12 +42,12 @@ class OpenSenseMapService:
         temperature = self._get_cache()
 
         if not temperature:
-            temperature = self._calculate_average_temperature()
+            temperature = self.calculate_average_temperature()
             self._set_cache(temperature)
 
         return temperature
 
-    def _calculate_average_temperature(self):
+    def calculate_average_temperature(self):
         """
         Calculate the average temperature emitted by sensors in the given Sense Boxes.
 
