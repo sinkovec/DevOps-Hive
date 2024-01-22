@@ -52,7 +52,7 @@ class OpenSenseMapService:
         last_measurements = [
             sensor.last_measurement.value
             for sensor in sensor_data
-            if from_date < sensor.last_measurement.created_at
+            if sensor and from_date < sensor.last_measurement.created_at
         ]
         if last_measurements:
             return round(mean(last_measurements), 2)

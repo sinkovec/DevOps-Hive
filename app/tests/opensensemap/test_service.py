@@ -120,6 +120,42 @@ def test_calculate_average_temperature_only_none_measurements():
     assert result == "No current measurements present."
 
 
+def test_calculate_average_temperature_contains_none_measurements():
+    """
+    Test the `OpenSenseMapService.calculate_average_temperature` method
+    with, but not limited to, None measurements returned.
+
+    Checks if the method returns an appropriate message when measurements 
+    from repository contains None values.
+    """
+    # given
+    mock_repository = Mock()
+    mock_repository.get_sensor_data.return_value = [create_sensor(0), None]
+    uut = OpenSenseMapService(None, mock_repository)
+    # when
+    result = uut.calculate_average_temperature()
+    # then
+    assert result == 0
+
+
+def test_calculate_average_temperature_only_none_measurements():
+    """
+    Test the `OpenSenseMapService.calculate_average_temperature` method
+    with only None measurements returned.
+
+    Checks if the method returns an appropriate message when measurements 
+    from repository contains only None values.
+    """
+    # given
+    mock_repository = Mock()
+    mock_repository.get_sensor_data.return_value = [None]
+    uut = OpenSenseMapService(None, mock_repository)
+    # when
+    result = uut.calculate_average_temperature()
+    # then
+    assert result == "No current measurements present."
+
+
 @pytest.mark.parametrize(
     "temperature, expected_result",
     [
