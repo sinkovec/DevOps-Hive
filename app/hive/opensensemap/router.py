@@ -12,11 +12,9 @@ Endpoints:
 from typing import Annotated
 from fastapi import APIRouter, Depends
 from prometheus_client import Gauge
-from redis import Redis
 
-from .di import get_service, get_repository, get_redis
+from .di import get_service
 from .service import OpenSenseMapService
-from .repository import OpenSenseMapRepository
 
 router = APIRouter()
 temperature_metric = Gauge(
