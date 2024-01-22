@@ -35,9 +35,9 @@ def test_calculate_average_temperature_positive():
         create_sensor(4.5),
         create_sensor(5),
     ]
-    uut = OpenSenseMapService(mock_repository)
+    uut = OpenSenseMapService(None, mock_repository)
     # when
-    result = uut.calculate_average_temperature()
+    result = uut._calculate_average_temperature()
     # then
     assert result == pytest.approx(4.5)
 
@@ -55,9 +55,9 @@ def test_calculate_average_temperature_negative():
         create_sensor(-5),
         create_sensor(-10),
     ]
-    uut = OpenSenseMapService(mock_repository)
+    uut = OpenSenseMapService(None, mock_repository)
     # when
-    result = uut.calculate_average_temperature()
+    result = uut._calculate_average_temperature()
     # then
     assert result == pytest.approx(-7.5)
 
@@ -71,9 +71,9 @@ def test_calculate_average_temperature_no_measurements():
     # given
     mock_repository = Mock()
     mock_repository.get_sensor_data.return_value = []
-    uut = OpenSenseMapService(mock_repository)
+    uut = OpenSenseMapService(None, mock_repository)
     # when
-    result = uut.calculate_average_temperature()
+    result = uut._calculate_average_temperature()
     # then
     assert result == "No current measurements present."
 
@@ -93,7 +93,7 @@ def test_temperature_status_lt10(temperature, expected_result):
     Checks if the method returns an appropriate message for given temperatures.
     """
     # given
-    uut = OpenSenseMapService(Mock())
+    uut = OpenSenseMapService(None, None)
     # when
     result = uut.temperature_status(temperature)
     # then
