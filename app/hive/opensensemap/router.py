@@ -10,31 +10,46 @@ Endpoints:
 
 """
 from typing import Annotated
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from prometheus_client import Gauge
 
 from .di import get_service
 from .service import OpenSenseMapService
+from .schemas import TemperatureBase
 
 router = APIRouter()
 temperature_metric = Gauge(
-        "temperature_average",
-        "Average temperature emitted by OpenSenseMap sensors",
-        namespace="opensensemap",
-    )
+    "temperature_average",
+    "Average temperature emitted by OpenSenseMap sensors",
+    namespace="opensensemap",
+)
 
 
 @router.get("/temperature")
-def read_temperature(service: Annotated[OpenSenseMapService, Depends(get_service)]):
+def read_temperature(
+    service: Annotated[OpenSenseMapService, Depends(get_service)]
+) -> TemperatureBase:
     """
     GET method to calculate and return the average temperature of sense box sensors.
 
     Returns:
-        dict: Dictionary containing "status" and "temperature" keys.
+        TemperatureBase: object containing "status" and "temperature" keys.
     """
-    avg_temperature = service.calculate_average_temperature()
-    temperature_metric.set(avg_temperature)
-    return {
-        "status": service.temperature_status(avg_temperature),
-        "temperature": avg_temperature,
-    }
+    return service.get_temperature()
+
+
+@router.head("/readyz")
+def head_readyz(service: Annotated[OpenSenseMapService, Depends(get_service)]):
+    """
+    Readiness probe that returns an OK response only if
+    - 50% + 1 sensors are available AND
+    - caching content does not expire within 5 minutes.
+
+    Returns:
+        Response: containing status_code for readiness probe.
+    """
+    if service.sensor_data_available():
+        status_code = 200
+    else:
+        status_code = 503  # service unavailable
+    return Response(status_code=status_code)

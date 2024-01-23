@@ -31,3 +31,29 @@ class OpenSenseMapRepository:
             self.api.fetch_sensor_data(sense_box_id, sensor_id)
             for (sense_box_id, sensor_id) in self.dao.load_sense_box_sensor_ids()
         ]
+
+    def sensors_ready(self):
+        """
+        For each sensor, checks via OpenSenseMapApi if a response is ok.
+
+        Returns:
+            list: true for each sensor, if API returns ok.
+        """
+        return [
+            self.api.sensor_data_ok(sense_box_id, sensor_id)
+            for (sense_box_id, sensor_id) in self.dao.load_sense_box_sensor_ids()
+        ]
+
+
+    def get_expire_times(self):
+        """
+        Fetches caching expire times for each sensor provided
+        in the database.
+
+        Returns:
+            list: Caching expire times for each sensor data
+        """
+        return [
+            self.api.expire_time(sense_box_id, sensor_id)
+            for (sense_box_id, sensor_id) in self.dao.load_sense_box_sensor_ids()
+        ]
