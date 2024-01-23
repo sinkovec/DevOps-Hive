@@ -147,19 +147,28 @@ def test_temperature_status(temperature, expected_result):
 
 
 @pytest.mark.parametrize(
-    "sensors_ready, plus_minutes, expected_result",
+    "sensors_ready, timedeltas, expected_result",
     [
         ([True, True, False], [], True),
         ([True, False, False], [1, None, 10], True),
         ([False, False, False], [None, None, 3], False),
     ],
 )
-def test_sensor_data_available(sensors_ready, plus_minutes, expected_result):
+def test_sensor_data_available(sensors_ready, timedeltas, expected_result):
+    """
+    Test the `OpenSenseMapService.sensor_data_available` method
+    with several sensor_ready results and timedeltas as input (parameterized).
+
+    Checks if the method returns True when enough sensors are available or caches are present,
+    False otherwise.
+    """
     # given
     mock_repository = Mock()
     mock_repository.sensors_ready.return_value = sensors_ready
     now = datetime.now(timezone.utc)
-    expire_times = map(lambda td: now + timedelta(minutes=td) if td else None, plus_minutes)
+    expire_times = map(
+        lambda td: now + timedelta(minutes=td) if td else None, timedeltas
+    )
     mock_repository.get_expire_times.return_value = expire_times
     uut = OpenSenseMapService(mock_repository)
     # when
@@ -168,22 +177,22 @@ def test_sensor_data_available(sensors_ready, plus_minutes, expected_result):
     assert result == expected_result
 
 
-
 @pytest.mark.parametrize(
-    "plus_minutes, expected_result",
-    [
-        (60, False),
-        (5, True),
-        (1, True),
-        (None, True)
-    ],
+    "td, expected_result",
+    [(60, False), (5, True), (1, True), (None, True)],
 )
-def test_in_less_than_5_minutes(plus_minutes, expected_result):
+def test_in_less_than_5_minutes(td, expected_result):
+    """
+    Test the `OpenSenseMapService._in_less_than` method
+    with several timdeltas as input (parameterized).
+
+    Checks if the method returns True when the current time + timedelta is
+    in less than 5 minutes from now.
+    """
     # given
     uut = OpenSenseMapService(None)
     # when
-    timestamp = datetime.now(timezone.utc) + timedelta(minutes=plus_minutes) \
-        if plus_minutes else None
+    timestamp = datetime.now(timezone.utc) + timedelta(minutes=td) if td else None
     # pylint: disable=protected-access
     result = uut._in_less_than(timedelta(minutes=5))(timestamp)
     # then

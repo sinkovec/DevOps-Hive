@@ -44,7 +44,6 @@ class OpenSenseMapRepository:
             for (sense_box_id, sensor_id) in self.dao.load_sense_box_sensor_ids()
         ]
 
-
     def get_expire_times(self):
         """
         Fetches caching expire times for each sensor provided

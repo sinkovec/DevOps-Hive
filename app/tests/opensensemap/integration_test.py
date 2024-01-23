@@ -36,7 +36,9 @@ def setup(request):
     def get_mock_dao():
         mock_dao = Mock()
         mock_dao.load_sense_box_sensor_ids.return_value = [
-            ("a", "1"), ("b", "2"), ("c", "3")
+            ("a", "1"),
+            ("b", "2"),
+            ("c", "3"),
         ]
         return mock_dao
 
@@ -61,6 +63,7 @@ def fake_sensor_data(sensor_id):
             },
         }
     )
+
 
 def test_temperature(mocker):
     """
@@ -89,6 +92,14 @@ def test_temperature(mocker):
 
 
 def test_readyz_success(mocker):
+    """
+    Test the readyz endpoint of the hive app.
+
+    Checks if the readyz endpoint returns OK response when sensors are available.
+
+    Args:
+        mocker: Pytest mocker fixture for mocking requests lib.
+    """
     # given
     fake_resp = mocker.Mock()
     fake_resp.status_code = 200
@@ -102,6 +113,15 @@ def test_readyz_success(mocker):
 
 
 def test_readyz_failed(mocker):
+    """
+    Test the readyz endpoint of the hive app.
+
+    Checks if the readyz endpoint returns Service Unavailable response
+    when sensors are not available and caching content is missing.
+
+    Args:
+        mocker: Pytest mocker fixture for mocking requests lib.
+    """
     # given
     fake_resp = mocker.Mock()
     fake_resp.status_code = 404
@@ -115,6 +135,15 @@ def test_readyz_failed(mocker):
 
 
 def test_readyz_success_cache(mocker):
+    """
+    Test the readyz endpoint of the hive app.
+
+    Checks if the readyz endpoint returns OK response
+    when sensors are not available but caching content is present.
+
+    Args:
+        mocker: Pytest mocker fixture for mocking requests lib.
+    """
     # given
     fake_resp = mocker.Mock()
     fake_resp.status_code = 404
