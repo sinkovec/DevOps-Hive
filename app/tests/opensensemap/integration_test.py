@@ -77,7 +77,7 @@ def test_temperature(mocker):
     fake_resp.json.return_value = fake_sensor_data(1)
     fake_resp.status_code = 200
 
-    mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
+    mocker.patch("hive.opensensemap.client.requests.get", return_value=fake_resp)
 
     # when
     response = client.get("/temperature")
@@ -102,7 +102,7 @@ def test_readyz_success(mocker):
     fake_resp = mocker.Mock()
     fake_resp.status_code = 200
 
-    mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
+    mocker.patch("hive.opensensemap.client.requests.get", return_value=fake_resp)
 
     # when
     response = client.get("/readyz")
@@ -124,7 +124,7 @@ def test_readyz_failed(mocker):
     fake_resp = mocker.Mock()
     fake_resp.status_code = 404
 
-    mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
+    mocker.patch("hive.opensensemap.client.requests.get", return_value=fake_resp)
 
     # when
     response = client.get("/readyz")
@@ -146,7 +146,7 @@ def test_readyz_success_cache(mocker):
     fake_resp = mocker.Mock()
     fake_resp.status_code = 404
 
-    mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
+    mocker.patch("hive.opensensemap.client.requests.get", return_value=fake_resp)
 
     fake_cache = json.dumps(
         {

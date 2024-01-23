@@ -50,7 +50,7 @@ class Sensor:
 
 
 @dataclass
-class SensorCache:
+class CachedResponse:
     """
     Represents an OpenSeseMap Sensor stored in cache.
     """
