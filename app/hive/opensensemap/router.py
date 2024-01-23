@@ -38,11 +38,11 @@ def read_temperature(
     return service.get_temperature()
 
 
-@router.head("/readyz")
+@router.get("/readyz")
 def head_readyz(service: Annotated[OpenSenseMapService, Depends(get_service)]):
     """
-    Readiness probe that returns an OK response only if
-    - 50% + 1 sensors are available AND
+    Readiness probe that returns an OK response unless
+    - 50% + 1 sensors are not accessible AND
     - caching content does not expire within 5 minutes.
 
     Returns:

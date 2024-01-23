@@ -4,6 +4,8 @@ Module for interacting with the OpenSenseMap API.
 This module defines the OpenSenseMapRepository class, which serves as a repository to
 interact with both the OpenSenseMap API and the database.
 """
+from .dao import OpenSenseMapDao
+from .api import OpenSenseMapApi
 
 
 class OpenSenseMapRepository:
@@ -15,7 +17,7 @@ class OpenSenseMapRepository:
     """
 
     # pylint: disable=too-few-public-methods
-    def __init__(self, api, dao):
+    def __init__(self, api: OpenSenseMapApi, dao: OpenSenseMapDao):
         self.api = api
         self.dao = dao
 
@@ -44,7 +46,7 @@ class OpenSenseMapRepository:
             for (sense_box_id, sensor_id) in self.dao.load_sense_box_sensor_ids()
         ]
 
-    def get_expire_times(self):
+    def get_created_at_times(self):
         """
         Fetches caching expire times for each sensor provided
         in the database.
@@ -53,6 +55,6 @@ class OpenSenseMapRepository:
             list: Caching expire times for each sensor data
         """
         return [
-            self.api.expire_time(sense_box_id, sensor_id)
+            self.api.cache_created_at(sense_box_id, sensor_id)
             for (sense_box_id, sensor_id) in self.dao.load_sense_box_sensor_ids()
         ]

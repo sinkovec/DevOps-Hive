@@ -4,13 +4,14 @@ Module for handling API requests to OpenSenseMap API.
 This module defines the OpenSenseMapApi class, which is responsible for handling
 API requests to the OpenSenseMap API.
 """
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+from dataclasses import asdict
 import json
 import requests
 
 from redis import Redis
 
-from .model import Sensor
+from .model import Sensor, SensorCache
 
 
 class OpenSenseMapApi:
@@ -25,7 +26,6 @@ class OpenSenseMapApi:
     def __init__(self, base_url: str, redis: Redis):
         self.base_url = base_url
         self.redis = redis
-        self.redis_expire_time = 60 * 30
 
     def fetch_sensor_data(self, sense_box_id, sensor_id):
         """
@@ -42,16 +42,27 @@ class OpenSenseMapApi:
         cache_key = self._cache_key(sense_box_id, sensor_id)
         data = self.redis.get(cache_key)
 
-        if not data:
+        if data:
+            data = SensorCache.from_json(json.loads(data))
+
+        # when missing or caching content is older than 5 minutes
+        should_recompute = not data or data.created_at < datetime.now(
+            timezone.utc
+        ) - timedelta(minutes=5)
+
+        if should_recompute:
             response = requests.get(
                 self._sensor_url(sense_box_id, sensor_id), timeout=30
             )
             if response.status_code == 200:
-                data = response.content
-                self.redis.set(cache_key, data, ex=self.redis_expire_time)
+                data = SensorCache(
+                    datetime.now(timezone.utc),
+                    response.json(),
+                )
+                self.redis.set(cache_key, json.dumps(asdict(data), default=str))
 
         if data:
-            data = Sensor.from_json(json.loads(data))
+            data = Sensor.from_json(data.content)
 
         return data
 
@@ -62,22 +73,19 @@ class OpenSenseMapApi:
         Returns:
             bool: true if the response status code is ok.
         """
-        response = requests.head(self._sensor_url(sense_box_id, sensor_id), timeout=30)
+        response = requests.get(self._sensor_url(sense_box_id, sensor_id), timeout=30)
         return response.status_code == 200
 
-    def expire_time(self, sense_box_id, sensor_id):
+    def cache_created_at(self, sense_box_id, sensor_id):
         """
-        For a given sensor, provides the expire time of cached data, i.e.,
-        when the sensor data will be evicted from Redis cache.
+        For a given sensor, provides the creation datetime of cached data.
 
         Returns:
-            datetime: datetime object representing timestamp when cache is evicted.
+            datetime: datetime object representing timestamp when cache was created.
         """
         cache_key = self._cache_key(sense_box_id, sensor_id)
-        expire_time = self.redis.expiretime(cache_key)
-        if expire_time < 0:
-            return None
-        return datetime.fromtimestamp(expire_time, timezone.utc)
+        data = self.redis.get(cache_key)
+        return SensorCache.from_json(json.loads(data)).created_at if data else None
 
     def _cache_key(self, sense_box_id, sensor_id):
         return f"opensensemap_{sense_box_id}_{sensor_id}"

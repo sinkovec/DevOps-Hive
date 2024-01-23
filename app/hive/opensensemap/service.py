@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, timezone
 from statistics import mean
 
 from .schemas import TemperatureBase, TemperatureStatus
+from .repository import OpenSenseMapRepository
 
 
 class OpenSenseMapService:
@@ -19,7 +20,7 @@ class OpenSenseMapService:
     and calculate the average temperature emitted by sensors in the given Sense Boxes.
     """
 
-    def __init__(self, repository):
+    def __init__(self, repository: OpenSenseMapRepository):
         self.repository = repository
 
     def get_temperature(self) -> TemperatureBase:
@@ -93,14 +94,14 @@ class OpenSenseMapService:
         """
         sensors = self.repository.sensors_ready()
         if sensors.count(False) >= len(sensors) // 2 + 1:
-            expire_times = self.repository.get_expire_times()
-            return not all(map(self._in_less_than(timedelta(minutes=5)), expire_times))
+            created_at = self.repository.get_created_at_times()
+            return not all(map(self._is_older_than(timedelta(minutes=5)), created_at))
         return True
 
-    def _in_less_than(self, td):
+    def _is_older_than(self, td):
         now = datetime.now(timezone.utc)
 
         def predicate(timestamp):
-            return not timestamp or timestamp < now + td
+            return not timestamp or timestamp + td < now
 
         return predicate

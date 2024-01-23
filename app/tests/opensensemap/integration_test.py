@@ -53,16 +53,14 @@ def fake_sensor_data(sensor_id):
     Returns:
         dict: Dictionary representing fake sensor data.
     """
-    return json.dumps(
-        {
-            "_id": sensor_id,
-            "title": "Sensor title",
-            "lastMeasurement": {
-                "createdAt": datetime.now(timezone.utc).isoformat(),
-                "value": "10",
-            },
-        }
-    )
+    return {
+        "_id": sensor_id,
+        "title": "Sensor title",
+        "lastMeasurement": {
+            "createdAt": datetime.now(timezone.utc).isoformat(),
+            "value": "10",
+        },
+    }
 
 
 def test_temperature(mocker):
@@ -76,7 +74,7 @@ def test_temperature(mocker):
     """
     # given
     fake_resp = mocker.Mock()
-    fake_resp.content = fake_sensor_data(1)
+    fake_resp.json.return_value = fake_sensor_data(1)
     fake_resp.status_code = 200
 
     mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
@@ -104,10 +102,10 @@ def test_readyz_success(mocker):
     fake_resp = mocker.Mock()
     fake_resp.status_code = 200
 
-    mocker.patch("hive.opensensemap.api.requests.head", return_value=fake_resp)
+    mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
 
     # when
-    response = client.head("/readyz")
+    response = client.get("/readyz")
     # then
     assert response.status_code == 200
 
@@ -126,10 +124,10 @@ def test_readyz_failed(mocker):
     fake_resp = mocker.Mock()
     fake_resp.status_code = 404
 
-    mocker.patch("hive.opensensemap.api.requests.head", return_value=fake_resp)
+    mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
 
     # when
-    response = client.head("/readyz")
+    response = client.get("/readyz")
     # then
     assert response.status_code == 503
 
@@ -148,11 +146,17 @@ def test_readyz_success_cache(mocker):
     fake_resp = mocker.Mock()
     fake_resp.status_code = 404
 
-    mocker.patch("hive.opensensemap.api.requests.head", return_value=fake_resp)
+    mocker.patch("hive.opensensemap.api.requests.get", return_value=fake_resp)
 
-    redis.get_client().set("opensensemap_a_1", fake_sensor_data(1), ex=3600)
+    fake_cache = json.dumps(
+        {
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "content": fake_sensor_data(1),
+        }
+    )
+    redis.get_client().set("opensensemap_a_1", fake_cache)
 
     # when
-    response = client.head("/readyz")
+    response = client.get("/readyz")
     # then
     assert response.status_code == 200
