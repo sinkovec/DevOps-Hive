@@ -19,7 +19,7 @@ from typing import Annotated
 from fastapi import Depends
 from redis import Redis
 from hive.config import settings
-from .api import OpenSenseMapApi
+from .client import OpenSenseMapClient
 from .dao import OpenSenseMapDao
 from .repository import OpenSenseMapRepository
 from .service import OpenSenseMapService
@@ -34,11 +34,11 @@ def get_redis():
     return Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
 
-def get_api(redis: Annotated[Redis, Depends(get_redis)]):
+def get_api():
     """
     Creates OpenSenseMapApi instance.
     """
-    return OpenSenseMapApi(OPEN_SENSE_MAP_API_BASE_URL, redis)
+    return OpenSenseMapClient(OPEN_SENSE_MAP_API_BASE_URL)
 
 
 def get_dao():
@@ -49,13 +49,14 @@ def get_dao():
 
 
 def get_repository(
-    api: Annotated[OpenSenseMapApi, Depends(get_api)],
+    api: Annotated[OpenSenseMapClient, Depends(get_api)],
     dao: Annotated[OpenSenseMapDao, Depends(get_dao)],
+    redis: Annotated[Redis, Depends(get_redis)],
 ):
     """
     Creates OpenSenseMapRepository instance.
     """
-    return OpenSenseMapRepository(api, dao)
+    return OpenSenseMapRepository(api, dao, redis)
 
 
 def get_service(
