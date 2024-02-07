@@ -19,7 +19,7 @@ def test_measurement_from_json():
     # given
     json_data = {"createdAt": "2024-01-17T20:00:00.00Z", "value": "1.25"}
     # when
-    result = Measurement.from_json(json_data)
+    result = Measurement(**json_data)
     # then
     assert result is not None
     assert result.value == approx(1.25)
@@ -42,10 +42,10 @@ def test_sensor_from_json():
         "lastMeasurement": {"createdAt": "2024-01-17T16:09:36.045Z", "value": "-2.27"},
     }
     # when
-    result = Sensor.from_json(json_data)
+    result = Sensor(**json_data)
     # then
     assert result is not None
     assert result.title == "Temperatur"
-    assert result.sensor_id == "61e6c8ffac538c001b9f4bf1"
+    assert result.id == "61e6c8ffac538c001b9f4bf1"
     assert result.last_measurement is not None
     assert result.last_measurement.value == -2.27

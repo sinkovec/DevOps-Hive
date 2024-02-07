@@ -13,8 +13,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Response
 from prometheus_client import Gauge
 
-from .di import get_service
-from .service import OpenSenseMapService
+from .di import get_service, get_availability_service
+from .service import OpenSenseMapTemperatureService, OpenSenseMapAvailabilityService
 from .schemas import TemperatureBase
 
 router = APIRouter()
@@ -27,7 +27,7 @@ temperature_metric = Gauge(
 
 @router.get("/temperature")
 def read_temperature(
-    service: Annotated[OpenSenseMapService, Depends(get_service)]
+    service: Annotated[OpenSenseMapTemperatureService, Depends(get_service)]
 ) -> TemperatureBase:
     """
     GET method to calculate and return the average temperature of sense box sensors.
@@ -35,11 +35,17 @@ def read_temperature(
     Returns:
         TemperatureBase: object containing "status" and "temperature" keys.
     """
-    return service.get_temperature()
+    result = service.get_temperature()
+    temperature_metric.set(result.temperature)
+    return result
 
 
 @router.get("/readyz")
-def head_readyz(service: Annotated[OpenSenseMapService, Depends(get_service)]):
+def head_readyz(
+    service: Annotated[
+        OpenSenseMapAvailabilityService, Depends(get_availability_service)
+    ]
+):
     """
     Readiness probe that returns an OK response unless
     - 50% + 1 sensors are not accessible AND
@@ -48,7 +54,7 @@ def head_readyz(service: Annotated[OpenSenseMapService, Depends(get_service)]):
     Returns:
         Response: containing status_code for readiness probe.
     """
-    if service.sensor_data_available():
+    if service.is_available():
         status_code = 200
     else:
         status_code = 503  # service unavailable

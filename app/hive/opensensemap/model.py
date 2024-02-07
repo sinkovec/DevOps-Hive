@@ -1,69 +1,54 @@
 """
 Module to define common models used when interacting with OpenSenseMap.
 """
+from typing import Annotated, List
 from datetime import datetime
-from dataclasses import dataclass
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
-@dataclass
-class Measurement:
+class Measurement(BaseModel):
     """
     Represents an OpenSenseMap Measurements.
     Measurements are emitted by Sensors.
     """
 
-    created_at: datetime
+    model_config = ConfigDict(populate_by_name=True)
+
+    created_at: Annotated[datetime, Field(alias="createdAt")]
     value: float
 
-    @classmethod
-    def from_json(cls, json_data):
-        """
-        Factory method to create a Measurement instance from a Json object.
-        """
-        return cls(
-            created_at=datetime.fromisoformat(json_data["createdAt"]),
-            value=float(json_data["value"]),
-        )
 
-
-@dataclass
-class Sensor:
+class Sensor(BaseModel):
     """
     Represents an OpenSenseMap Sensor.
     A sensor is identifable and emits measurements of a specific type, e.g., temperature.
     """
 
-    sensor_id: str
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: Annotated[str, Field(alias="_id")]
     title: str
-    last_measurement: Measurement
-
-    @classmethod
-    def from_json(cls, json_data):
-        """
-        Factory method to create a Sensor instance from a Json object.
-        """
-        return cls(
-            sensor_id=json_data["_id"],
-            title=json_data["title"],
-            last_measurement=Measurement.from_json(json_data["lastMeasurement"]),
-        )
+    last_measurement: Annotated[Measurement, Field(alias="lastMeasurement")]
 
 
-@dataclass
-class CachedResponse:
+class SenseBox(BaseModel):
     """
-    Represents an OpenSeseMap Sensor stored in cache.
+    Represents an OpenSenseMap Sense Box.
+    A Sense Box is identifiable and consists of several sensors.
     """
 
-    created_at: datetime
-    content: dict
+    model_config = ConfigDict(populate_by_name=True)
 
-    @classmethod
-    def from_json(cls, json_data):
-        """
-        Factory method to create a Sensor cache instance from a Json object.
-        """
-        return cls(
-            datetime.fromisoformat(json_data["created_at"]),
-            content=json_data["content"],
-        )
+    id: Annotated[str, Field(alias="_id")]
+    name: str
+    sensors: List[Sensor]
+
+
+class CachedEntity(BaseModel):
+    """
+    Represents a cached entity.
+    """
+
+    last_modified: datetime
+    entity: dict

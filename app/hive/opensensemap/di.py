@@ -1,16 +1,16 @@
 """
 Module for configuring the OpenSenseMap API components.
 
-This module initializes and configures the various components of the OpenSenseMap API, including
-the API router, OpenSenseMap API instance, data access object (DAO), repository, and service.
+This module initializes and configures the various components of the OpenSenseMap API client,
+repository, and service.
 
 Components:
-    - api: Instance of OpenSenseMapApi for handling API requests.
-    - dao: Instance of OpenSenseMapDao for data access to the OpenSenseMap database.
-    - redis: Instance of Redis to cache service results.
+    - client: Instance of OpenSenseMapClient for handling API requests.
+    - redis: Instance of Redis to cache entities.
+    - caching_repository: Instance of CachingRepository to cache OpenSenseMapRepository results.
     - repository: Instance of OpenSenseMapRepository for interaction with the API and database.
-    - service: Instance of OpenSenseMapService for calculating average temperatures.
-    - router: FastAPI router instance for defining API routes.
+    - service: Instance of OpenSenseMapTemperatureService for calculating average temperatures.
+    - availability_service: Instance of OpenSenseMapAvailabilityService for requesting availability
 
 Configuration:
     - OPEN_SENSE_MAP_API_BASE_URL (str): Base URL for the OpenSenseMap API.
@@ -18,11 +18,12 @@ Configuration:
 from typing import Annotated
 from fastapi import Depends
 from redis import Redis
+
 from hive.config import settings
+from .model import SenseBox
 from .client import OpenSenseMapClient
-from .dao import OpenSenseMapDao
-from .repository import OpenSenseMapRepository
-from .service import OpenSenseMapService
+from .repository import SenseBoxRepository, CachingRepository
+from .service import OpenSenseMapTemperatureService, OpenSenseMapAvailabilityService
 
 OPEN_SENSE_MAP_API_BASE_URL = "https://api.opensensemap.org"
 
@@ -34,35 +35,48 @@ def get_redis():
     return Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
 
-def get_api():
+def get_client():
     """
-    Creates OpenSenseMapApi instance.
+    Creates OpenSenseMapClient instance.
     """
     return OpenSenseMapClient(OPEN_SENSE_MAP_API_BASE_URL)
 
 
-def get_dao():
+def get_repository(client: Annotated[OpenSenseMapClient, Depends(get_client)]):
     """
-    Creates OpenSenseMapDao instance.
+    Creates SenseBoxRepository instance.
     """
-    return OpenSenseMapDao()
+    repository = SenseBoxRepository(client)
+    repository.sense_box_ids = [
+        sense_box_id.strip() for sense_box_id in settings.SENSE_BOX_IDS.split(",")
+    ]
+    return repository
 
 
-def get_repository(
-    api: Annotated[OpenSenseMapClient, Depends(get_api)],
-    dao: Annotated[OpenSenseMapDao, Depends(get_dao)],
+def get_caching_repository(
+    delegate: Annotated[SenseBoxRepository, Depends(get_repository)],
     redis: Annotated[Redis, Depends(get_redis)],
 ):
     """
-    Creates OpenSenseMapRepository instance.
+    Creates CachingRepository instance.
     """
-    return OpenSenseMapRepository(api, dao, redis)
+    return CachingRepository(delegate, SenseBox, redis)
 
 
 def get_service(
-    repository: Annotated[OpenSenseMapRepository, Depends(get_repository)],
+    repository: Annotated[CachingRepository, Depends(get_caching_repository)],
 ):
     """
-    Creates OpenSenseMapService instance.
+    Creates OpenSenseMapTemperatureService instance.
     """
-    return OpenSenseMapService(repository)
+    return OpenSenseMapTemperatureService(repository)
+
+
+def get_availability_service(
+    repository: Annotated[SenseBoxRepository, Depends(get_repository)],
+    caching_repository: Annotated[CachingRepository, Depends(get_caching_repository)],
+):
+    """
+    Creates OpenSenseMapAvailabilityService instance.
+    """
+    return OpenSenseMapAvailabilityService(repository, caching_repository)
