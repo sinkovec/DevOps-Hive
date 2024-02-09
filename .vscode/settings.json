@@ -6,7 +6,8 @@
         "ide",
         "k8s",
         "ci",
-        "cd"
+        "cd",
+        "helm"
     ],
     "python.testing.pytestArgs": [
         "app"
