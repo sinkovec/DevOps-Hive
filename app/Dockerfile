@@ -15,11 +15,10 @@ RUN pip install --no-cache-dir poetry~=1.7.0
 WORKDIR /app
 
 COPY pyproject.toml poetry.lock README.md ./
-
-RUN poetry install --without=dev
-
 COPY hive ./hive
 COPY config ./config
+
+RUN poetry install --without=dev
 
 USER nobody
 
