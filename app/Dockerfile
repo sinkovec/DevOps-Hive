@@ -19,6 +19,7 @@ COPY pyproject.toml poetry.lock README.md ./
 RUN poetry install --without=dev
 
 COPY hive ./hive
+COPY config ./config
 
 USER nobody
 
