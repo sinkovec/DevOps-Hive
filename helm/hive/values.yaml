@@ -97,6 +97,12 @@ tolerations: []
 
 affinity: {}
 
+hive:
+  redis:
+    host: hive-redis-master
+    port: 6379
+  senseBoxIds: 62221953b527de001b58de79,61ed83f8f4d1e2001c350c77,61e6c8ffac538c001b9f4bf0
+
 redis:
   enabled: true
   auth:

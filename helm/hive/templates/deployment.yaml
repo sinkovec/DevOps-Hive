@@ -37,12 +37,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: DYNACONF_REDIS_HOST
-              value: "{{ .Release.Name }}-redis-master"
-            - name: DYNACONF_REDIS_PORT
-              value: "6379"
+            - name: HIVE_REDIS_HOST
+              value: "{{ .Values.hive.redis.host }}"
+            - name: HIVE_REDIS_PORT
+              value: "{{ .Values.hive.redis.port }}"
             - name: SENSE_BOX_IDS
-              value: "62221953b527de001b58de79,61ed83f8f4d1e2001c350c77,61e6c8ffac538c001b9f4bf0"
+              value: "{{ .Values.hive.senseBoxIds }}"
           ports:
             - name: http
               containerPort: 8080
