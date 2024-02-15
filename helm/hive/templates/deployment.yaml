@@ -36,6 +36,13 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: HIVE_REDIS_HOST
+              value: "{{ .Values.hive.redis.host }}"
+            - name: HIVE_REDIS_PORT
+              value: "{{ .Values.hive.redis.port }}"
+            - name: SENSE_BOX_IDS
+              value: "{{ .Values.hive.senseBoxIds }}"
           ports:
             - name: http
               containerPort: 8080
