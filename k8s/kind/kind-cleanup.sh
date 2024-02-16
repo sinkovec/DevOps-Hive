@@ -1,4 +1,5 @@
 #!/bin/bash
 
-docker rm -f kind-hive-cluster
+kind delete cluster -n kind-hive-cluster
+docker rm -f hive-cluster-control-plane
 docker rm -f kind-registry

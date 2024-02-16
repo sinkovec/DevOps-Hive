@@ -67,6 +67,14 @@ EOF
 #   --selector=app.kubernetes.io/component=controller \
 #   --timeout=90s
 
+# 7. Bootstrap cluster with ArgoCD and default application sets.
+# For some reason, ApplicationSet CRD are not detected in the first run, resulting in an incomplete setup.
+# Therefore, the kustomization is run twice to ensure ApplicationSets are installed.
+kubectl apply -k ../bootstrap/overlays/default || true
+sleep 5
 kubectl apply -k ../bootstrap/overlays/default
+
+# 8. Load docker images to local registry
+docker pull ghcr.io/sinkovec/hive-app:latest --platform linux/amd64 && docker tag ghcr.io/sinkovec/hive-app:latest localhost:5001/sinkovec/hive-app:latest && docker push localhost:5001/sinkovec/hive-app:latest
 
 echo "Setup complete. Run ./kind-cleanup.sh to cleanup"
