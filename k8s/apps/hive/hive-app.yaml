@@ -7,8 +7,16 @@ spec:
   project: default
   source:
     chart: hive
-    repoURL: https://github.com/sinkovec/DevOps-Hive.git
-    targetRevision: HEAD
+    repoURL: https://sinkovec.github.io/DevOps-Hive
+    targetRevision: 0.1.0
+    helm:
+      releaseName: hive
+      values: |
+        image:
+          repository: localhost:5001/sinkovec/hive-app
+          pullPolicy: Always
+        ingress:
+          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: hive
