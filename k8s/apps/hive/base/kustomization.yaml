@@ -10,4 +10,3 @@ helmCharts:
   releaseName: hive
   version: 0.1.0
   namespace: hive
-  valuesFile: values.yaml
