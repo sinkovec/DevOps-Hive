@@ -1,0 +1,5 @@
+image:
+  repository: localhost:5001/sinkovec/hive-app
+  pullPolicy: Always
+ingress:
+  enabled: true

@@ -58,13 +58,23 @@ data:
 EOF
 
 
-# 6. Setup ingress-nginx
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-sleep 20
-# wait until its ready
-kubectl wait --namespace ingress-nginx \
-  --for=condition=ready pod \
-  --selector=app.kubernetes.io/component=controller \
-  --timeout=90s
+# # 6. Setup ingress-nginx
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+# sleep 20
+# # wait until its ready
+# kubectl wait --namespace ingress-nginx \
+#   --for=condition=ready pod \
+#   --selector=app.kubernetes.io/component=controller \
+#   --timeout=90s
 
-echo "Setup complete. Run kind delete cluster -n hive-cluster to cleanup"
+# 7. Bootstrap cluster with ArgoCD and default application sets.
+# For some reason, ApplicationSet CRD are not detected in the first run, resulting in an incomplete setup.
+# Therefore, the kustomization is run twice to ensure ApplicationSets are installed.
+kubectl apply -k ../bootstrap/overlays/default || true
+sleep 5
+kubectl apply -k ../bootstrap/overlays/default
+
+# 8. Load docker images to local registry
+docker pull ghcr.io/sinkovec/hive-app:latest --platform linux/amd64 && docker tag ghcr.io/sinkovec/hive-app:latest localhost:5001/sinkovec/hive-app:latest && docker push localhost:5001/sinkovec/hive-app:latest
+
+echo "Setup complete. Run ./kind-cleanup.sh to cleanup"

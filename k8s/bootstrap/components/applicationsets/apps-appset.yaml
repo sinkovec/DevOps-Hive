@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/sinkovec/DevOps-Hive
+      revision: main
+      directories:
+      - path: k8s/apps/*
+  template:
+    metadata:
+      name: "{{ path.basename }}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/sinkovec/DevOps-Hive
+        targetRevision: main
+        path: "{{ path }}"
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
