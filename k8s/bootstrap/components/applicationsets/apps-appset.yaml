@@ -18,7 +18,7 @@ spec:
       source:
         repoURL: https://github.com/sinkovec/DevOps-Hive
         targetRevision: main
-        path: "{{ path }}"
+        path: "{{ path }}/overlays/default"
       destination:
         server: https://kubernetes.default.svc
       syncPolicy:
