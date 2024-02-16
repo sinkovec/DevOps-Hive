@@ -44,6 +44,7 @@ jobs:
   scan-helm:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
     - uses: tenable/terrascan-action@dd7e921056c6f25b25bff3cf791e063ed7fc3a78 # v1.5.0
       with:
         iac_type: helm
@@ -58,6 +59,7 @@ jobs:
   scan-k8s:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
     - uses: tenable/terrascan-action@dd7e921056c6f25b25bff3cf791e063ed7fc3a78 # v1.5.0
       with:
         iac_type: k8s
