@@ -58,13 +58,15 @@ data:
 EOF
 
 
-# 6. Setup ingress-nginx
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-sleep 20
-# wait until its ready
-kubectl wait --namespace ingress-nginx \
-  --for=condition=ready pod \
-  --selector=app.kubernetes.io/component=controller \
-  --timeout=90s
+# # 6. Setup ingress-nginx
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+# sleep 20
+# # wait until its ready
+# kubectl wait --namespace ingress-nginx \
+#   --for=condition=ready pod \
+#   --selector=app.kubernetes.io/component=controller \
+#   --timeout=90s
 
-echo "Setup complete. Run kind delete cluster -n hive-cluster to cleanup"
+kubectl apply -k ../bootstrap/overlays/default
+
+echo "Setup complete. Run ./kind-cleanup.sh to cleanup"
