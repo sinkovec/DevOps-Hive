@@ -41,6 +41,25 @@ jobs:
           -Dsonar.tests=tests
           -Dsonar.language=py
           -Dsonar.python.coverage.reportPaths=coverage.xml
+  scan-helm:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+    - uses: tenable/terrascan-action@dd7e921056c6f25b25bff3cf791e063ed7fc3a78 # v1.5.0
+      with:
+        iac_type: helm
+        iac_version: v3
+        iac_dir: ./helm
+        only_warn: true
+        non_recursive: false
+        sarif_upload: true
+    - uses: github/codeql-action/upload-sarif@379614612a29c9e28f31f39a59013eb8012a51f0 # v3.24.3
+      with:
+        sarif_file: terrascan.sarif
+  scan-k8s:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
     - uses: tenable/terrascan-action@dd7e921056c6f25b25bff3cf791e063ed7fc3a78 # v1.5.0
       with:
         iac_type: k8s
@@ -48,6 +67,7 @@ jobs:
         iac_dir: ./k8s
         policy_type: k8s
         only_warn: true
+        non_recursive: false
         sarif_upload: true
     - uses: github/codeql-action/upload-sarif@379614612a29c9e28f31f39a59013eb8012a51f0 # v3.24.3
       with:
