@@ -9,14 +9,18 @@ components:
 - ../../components/applicationsets
 
 patches:
-- patch: |-
-    apiVersion: argoproj.io/v1alpha1
+- path: local-core-appset.yaml
+  target:
     kind: ApplicationSet
-    metadata:
-      name: apps
-      namespace: argocd
-    spec:
-      template:
-        spec:
-          source:
-            path: "{{ path }}/overlays/default"
+    name: core
+    namespace: argocd
+- path: local-apps-appset.yaml
+  target:
+    kind: ApplicationSet
+    name: apps
+    namespace: argocd
+- path: local-git-repo.yaml
+  target:
+    kind: Deployment
+    name: argocd-repo-server
+    namespace: argocd

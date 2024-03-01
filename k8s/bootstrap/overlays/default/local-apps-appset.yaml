@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: 'file:///tmp/local-git-repo'
+      revision: HEAD
+      directories:
+      - path: k8s/apps/*
+  template:
+    spec:
+      source:
+        repoURL: 'file:///tmp/local-git-repo'
+        path: "{{ path }}/overlays/default"
