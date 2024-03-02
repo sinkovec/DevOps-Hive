@@ -20,4 +20,7 @@ nodes:
   - containerPort: 443
     hostPort: 443
     protocol: TCP
+  extraMounts:
+  - hostPath: ../../
+    containerPath: /tmp/local-git-repo
     
