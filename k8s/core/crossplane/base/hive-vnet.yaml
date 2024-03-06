@@ -2,6 +2,7 @@ apiVersion: network.azure.upbound.io/v1beta1
 kind: VirtualNetwork
 metadata:
   name: hive-vnet
+  namespace: crossplane
 spec:
   forProvider:
     addressSpace:
