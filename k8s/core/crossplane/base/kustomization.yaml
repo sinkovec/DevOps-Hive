@@ -5,6 +5,10 @@ namespace: crossplane
 
 resources:
 - crossplane-ns.yaml
+- azure-provider.yaml
+- azure-providerconfig.yaml
+- hive-rg.yaml
+- hive-vnet.yaml
 
 helmCharts:
 - name: crossplane
