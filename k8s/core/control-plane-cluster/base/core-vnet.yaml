@@ -8,3 +8,5 @@ spec:
     addressSpace:
       - 10.0.0.0/16
     location: West Europe
+    resourceGroupNameRef:
+      name: core-rg
