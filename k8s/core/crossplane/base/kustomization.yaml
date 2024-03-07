@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: crossplane
+
+resources:
+- crossplane-ns.yaml
+
+helmCharts:
+- name: crossplane
+  repo: https://charts.crossplane.io/stable
+  releaseName: crossplane
+  version: 1.15.0
+  namespace: crossplane
