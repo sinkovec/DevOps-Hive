@@ -2,8 +2,6 @@ apiVersion: azure.upbound.io/v1beta1
 metadata:
   name: default
   namespace: crossplane
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 kind: ProviderConfig
 spec:
   credentials:
