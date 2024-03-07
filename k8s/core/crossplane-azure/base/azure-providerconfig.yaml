@@ -1,6 +1,7 @@
 apiVersion: azure.upbound.io/v1beta1
 metadata:
   name: default
+  namespace: crossplane
 kind: ProviderConfig
 spec:
   credentials:
