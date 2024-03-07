@@ -70,7 +70,7 @@ EOF
 # 7. Bootstrap cluster with ArgoCD and default application sets.
 # For some reason, ApplicationSet CRD are not detected in the first run, resulting in an incomplete setup.
 # Therefore, the kustomization is run twice to ensure ApplicationSets are installed.
-until kubectl apply -k ../bootstrap/overlays/default; do
+until kubectl apply -k ../core/gitops-operator/overlays/default; do
   sleep 3
 done
 

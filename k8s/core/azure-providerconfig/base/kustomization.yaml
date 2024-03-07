@@ -4,5 +4,4 @@ kind: Kustomization
 namespace: crossplane
 
 resources:
-- azure-provider.yaml
 - azure-providerconfig.yaml

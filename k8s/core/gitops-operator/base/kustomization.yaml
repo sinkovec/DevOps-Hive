@@ -5,8 +5,10 @@ resources:
 - argocd-ns.yaml
 - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-configMapGenerator:
-- name: argocd-cm
-  behavior: merge
-  literals:
-    - kustomize.buildOptions=--enable-helm
+patches:
+- path: argocd-cm-patch.yaml
+  target:
+    group: ""
+    version: v1
+    kind: ConfigMap
+    name: argocd-cm
