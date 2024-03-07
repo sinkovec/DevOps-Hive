@@ -74,7 +74,11 @@ until kubectl apply -k ../core/gitops-operator/overlays/default; do
   sleep 3
 done
 
+source $(dirname "$0")/azure-secret.sh
+
 # 8. Load docker images to local registry
 docker pull ghcr.io/sinkovec/hive-app:latest --platform linux/amd64 && docker tag ghcr.io/sinkovec/hive-app:latest localhost:5001/sinkovec/hive-app:latest && docker push localhost:5001/sinkovec/hive-app:latest
 
-echo "Setup complete. Run ./kind-cleanup.sh to cleanup"
+echo "Setup complete. Run ./kind-cleanup.sh to cleanup. Running ArgoCD dashboard now.."
+
+argocd admin dashboard -n argocd
