@@ -5,7 +5,6 @@ namespace: crossplane
 
 resources:
 - crossplane-ns.yaml
-- azure-provider.yaml
 
 helmCharts:
 - name: crossplane
