@@ -1,0 +1,13 @@
+apiVersion: network.azure.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  name: core-aks-subnet
+  namespace: core
+spec:
+  forProvider:
+    addressPrefixes:
+      - 10.0.1.0/24
+    resourceGroupNameRef:
+      name: core-rg
+    virtualNetworkNameRef:
+      name: core-vnet
