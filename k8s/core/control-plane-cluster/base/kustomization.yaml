@@ -4,7 +4,8 @@ namespace: core
 
 resources:
 - core-ns.yaml
-- core-rg.yaml
-- core-vnet.yaml
-- core-aks-subnet.yaml
-- core-aks.yaml
+- core-composition.yaml
+# - core-rg.yaml
+# - core-vnet.yaml
+# - core-aks-subnet.yaml
+# - core-aks.yaml

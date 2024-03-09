@@ -1,0 +1,56 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+spec:
+  resources:
+  - name: ResourceGroup
+    base:
+      apiVersion: azure.upbound.io/v1beta1
+      kind: ResourceGroup
+      metadata:
+        name: core-rg
+      spec:
+        forProvider:
+          location: West Europe
+          tags:
+            provisioner: crossplane
+  - name: VirtualNetwork
+    base:
+      apiVersion: network.azure.upbound.io/v1beta1
+      kind: VirtualNetwork
+      metadata:
+        name: core-vnet
+      spec:
+        forProvider:
+          addressSpace:
+            - 10.0.0.0/16
+          location: West Europe
+          resourceGroupNameRef:
+            name: core-rg
+  - name: Subnet
+    base:
+      apiVersion: network.azure.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        name: core-subnet
+      spec:
+        forProvider:
+          addressPrefixes:
+            - 10.0.1.0/24
+          resourceGroupNameRef:
+            name: core-rg
+          virtualNetworkNameRef:
+            name: core-vnet
+  - name: BlobStorage
+    base:
+      apiVersion: storage.azure.upbound.io/v1beta1
+      kind: Account
+      metadata:
+        name: core-blob
+      spec:
+        forProvider:
+          accountKind: BlobStorage
+          accountReplicationType: LRS
+          accountTier: Standard
+          location: West Europe
+          resourceGroupNameRef:
+            name: core-rg
