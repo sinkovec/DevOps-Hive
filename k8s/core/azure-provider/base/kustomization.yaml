@@ -6,3 +6,4 @@ namespace: crossplane
 resources:
 - provider-azure-network.yaml
 - provider-azure-containerservice.yaml
+- provider-azure-storage.yaml
