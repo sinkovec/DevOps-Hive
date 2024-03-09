@@ -21,6 +21,6 @@ spec:
     location: West Europe
     resourceGroupNameRef:
       name: core-rg
-  writeConfigToSecretRef:
+  writeConnectionSecretToRef:
     name: core-aks-connection-details
     namespace: core
