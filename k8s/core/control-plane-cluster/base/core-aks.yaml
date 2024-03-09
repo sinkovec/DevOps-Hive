@@ -21,3 +21,5 @@ spec:
     location: West Europe
     resourceGroupNameRef:
       name: core-rg
+    publishConnectionDetailsTo:
+      name: core-aks-connection-details
