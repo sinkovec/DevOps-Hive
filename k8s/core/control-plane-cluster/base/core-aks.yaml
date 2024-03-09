@@ -1,0 +1,23 @@
+apiVersion: containerservice.azure.upbound.io/v1beta1
+kind: KubernetesCluster
+metadata:
+  name: core-aks
+  namespace: core
+spec:
+  forProvider:
+    defaultNodePool:
+    - name: default
+      nodeCount: 1
+      vmSize: Standard_D2_v2
+      vnetSubnetIdRef:
+        name: core-aks-subnet
+    networkProfile:
+    - networkPlugin: azure
+      serviceCidr: 10.0.2.0/24
+      dnsServiceIp: 10.0.2.10
+    identity:
+    - type: SystemAssigned
+    dnsPrefix: core-aks
+    location: West Europe
+    resourceGroupNameRef:
+      name: core-rg

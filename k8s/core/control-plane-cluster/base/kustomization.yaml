@@ -6,3 +6,5 @@ resources:
 - core-ns.yaml
 - core-rg.yaml
 - core-vnet.yaml
+- core-aks-subnet.yaml
+- core-aks.yaml
