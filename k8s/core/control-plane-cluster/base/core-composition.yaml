@@ -6,8 +6,6 @@ spec:
     base:
       apiVersion: azure.upbound.io/v1beta1
       kind: ResourceGroup
-      metadata:
-        name: core-rg
       spec:
         forProvider:
           location: West Europe
@@ -17,8 +15,6 @@ spec:
     base:
       apiVersion: network.azure.upbound.io/v1beta1
       kind: VirtualNetwork
-      metadata:
-        name: core-vnet
       spec:
         forProvider:
           addressSpace:
@@ -30,8 +26,6 @@ spec:
     base:
       apiVersion: network.azure.upbound.io/v1beta1
       kind: Subnet
-      metadata:
-        name: core-subnet
       spec:
         forProvider:
           addressPrefixes:
@@ -44,8 +38,6 @@ spec:
     base:
       apiVersion: storage.azure.upbound.io/v1beta1
       kind: Account
-      metadata:
-        name: core-blob
       spec:
         forProvider:
           accountKind: BlobStorage
