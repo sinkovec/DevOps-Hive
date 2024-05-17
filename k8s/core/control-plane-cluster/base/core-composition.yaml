@@ -3,6 +3,9 @@ kind: Composition
 metadata:
   name: core-composition
 spec:
+  compositeTypeRef:
+    apiVersion: custom-api.example.org/v1alpha1
+    kind: my-composite
   resources:
   - name: ResourceGroup
     base:

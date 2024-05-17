@@ -1,0 +1,12 @@
+apiVersion: storage.azure.upbound.io/v1beta1
+kind: Account
+metadata:
+  name: core-storage
+spec:
+  forProvider:
+    accountKind: BlobStorage
+    accountReplicationType: LRS
+    accountTier: Standard
+    location: West Europe
+    resourceGroupNameRef:
+      name: core-rg

@@ -1,0 +1,12 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata: 
+  name: my-composite.example.org
+spec:
+  group: example.org
+  names:
+    kind: xMyComposite
+    plural: xmycomposites
+  versions:
+  - name: v1alpha1
+    
