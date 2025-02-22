@@ -10,7 +10,7 @@ python = "^3.12"
 fastapi = "^0.115.0"
 uvicorn = {extras = ["standard"], version = "^0.34.0"}
 requests = "^2.31.0"
-prometheus-fastapi-instrumentator = "^6.1.0"
+prometheus-fastapi-instrumentator = "^7.0.0"
 redis = "^5.0.1"
 dynaconf = "^3.2.4"
 
